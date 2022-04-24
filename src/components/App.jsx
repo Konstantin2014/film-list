@@ -1,6 +1,6 @@
 import data from '../data.json';
 import mapper from '../Utils/Mapper';
-import { FilmList } from '../Filmlist/Filmlist';
+import { FilmList } from '../components/Filmlist/Filmlist';
 import { Button } from '../components/Button/Button';
 
 import { Component } from 'react';
