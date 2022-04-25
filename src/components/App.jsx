@@ -1,56 +1,149 @@
-import data from '../data.json';
+import { useState, useEffect } from 'react';
 import mapper from '../Utils/Mapper';
 import { FilmList } from '../components/Filmlist/Filmlist';
-import { Button } from '../components/Button/Button';
+import * as API from '../services/api';
+import { Button } from './Button/Button';
+import { Modal } from './Modal/Modal';
 
-import { Component } from 'react';
+import React from 'react';
 
-class App extends Component {
-  state = {
-    films: mapper(data),
-    isVisible: false,
+export const App = () => {
+  const [films, setFilms] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [image, setImage] = useState('');
+
+  useEffect(() => {
+    setIsLoading(true);
+    API.getFilms(page)
+      .then(films => {
+        const mapperFilms = mapper(films);
+        setFilms(prevFilms => [...prevFilms, ...mapperFilms]);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      .finally(setIsLoading(false));
+  }, [page]);
+
+  const loadMore = () => {
+    setPage(prevPage => prevPage + 1);
   };
 
-  toggleVisibility = () => {
-    this.setState(({ isVisible }) => ({ isVisible: !isVisible }));
-  };
-  deleteFilm = deleteId => {
-    this.setState(prevState => ({
-      films: prevState.films.filter(({ id }) => deleteId !== id),
-    }));
-  };
-  toggleWatchedFilm = currentId => {
-    this.setState(prevState => ({
-      films: prevState.films.map(film => {
-        if (currentId === film.id) {
-          return { ...film, watched: !film.watched };
+  const toggleWatchedFilms = id => {
+    setFilms(prevFilms =>
+      prevFilms.map(film => {
+        if (film.id === id) {
+          return {
+            ...film,
+            watched: !film.watched,
+          };
         }
-        // console.log(film);
         return film;
-      }),
-    }));
-    console.log(this.state.films);
+      })
+    );
   };
 
-  render() {
-    const { isVisible, films } = this.state;
-    return (
-      <>
-        <h1>Filmoteka</h1>
-        <Button
-          toggleVisibility={this.toggleVisibility}
-          isVisible={isVisible}
-        />
-        {isVisible && (
-          <FilmList
-            films={films}
-            onDeleteFilm={this.deleteFilm}
-            onWatchedFilm={this.toggleWatchedFilm}
-          />
-        )}
-      </>
-    );
-  }
-}
+  const openModal = image => {
+    setImage(image);
+  };
 
-export default App;
+  const closeModal = () => {
+    setImage('');
+  };
+
+  return (
+    <>
+      {isLoading && <h1>Loading...</h1>}
+      <FilmList
+        films={films}
+        openModal={openModal}
+        // deleteFilm={this.deleteFilm}
+        toggleWatchedFilms={toggleWatchedFilms}
+      />
+      {films.length > 0 && <Button loadMore={loadMore} />}
+      {image && <Modal image={image} closeModal={closeModal} />}
+    </>
+  );
+};
+
+// export class App extends Component {
+//   state = {
+//     films: [],
+//     isLoading: false,
+//     page: 1,
+//   };
+
+//   componentDidMount() {
+//     this.getFetchFilms(this.state.page);
+//   }
+
+//   componentDidUpdate(prevProps, prevState) {
+//     if (prevState.page !== this.state.page) {
+//       this.getFetchFilms(this.state.page);
+//     }
+//   }
+
+//   getFetchFilms = async (page) => {
+//     try {
+//       this.setState({ isLoading: true });
+// API.getFilms(page).then((films) => {
+//   const mapperFilms = mapper(films);
+//   this.setState((prevState) => {
+//     return {
+//       films: [...prevState.films, ...mapperFilms],
+//       isLoading: false,
+//     };
+//   });
+//       });
+//     } catch (error) {
+//       console.log(error);
+//       this.setState({ isLoading: false });
+//     }
+//   };
+
+// toggleWatchedFilms = (id) => {
+//   this.setState((prevState) => {
+//     return {
+//       films: prevState.films.map((film) => {
+//         if (film.id === id) {
+//           return {
+//             ...film,
+//             watched: !film.watched,
+//           };
+//         }
+//         return film;
+//       }),
+//     };
+//   });
+// };
+
+//   loadMore = () => {
+//     this.setState((prevState) => {
+//       return {
+//         page: prevState.page + 1,
+//       };
+//     });
+//   };
+
+// deleteFilm = (id) => {
+//   this.setState((prevState) => {
+//     return {
+//       films: prevState.films.filter((item) => item.id !== id),
+//     };
+//   });
+// };
+
+// render() {
+// return (
+//   <>
+//     <FilmList
+//       films={this.state.films}
+//       // deleteFilm={this.deleteFilm}
+//       toggleWatchedFilms={this.toggleWatchedFilms}
+//     />
+//     {this.state.films.length > 0 && <Button loadMore={this.loadMore} />}
+//   </>
+// );
+// }
+// }

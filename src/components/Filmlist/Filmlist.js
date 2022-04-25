@@ -1,34 +1,24 @@
-import { FilmListItem } from './Filmlistitem';
-import propTypes from 'prop-types';
+import { FilmListItem } from '../FilmListItem/FilmListItem';
+import { FilmListBlock } from './FilmList.styled';
 
-export const FilmList = ({ films, onDeleteFilm, onWatchedFilm }) => {
+export const FilmList = ({ films, openModal, toggleWatchedFilms }) => {
   return (
-    <ul>
-      {films.map(({ id, title, img, watched }) => (
-        <li key={id}>
-          <FilmListItem
-            id={id}
-            title={title}
-            img={img}
-            onDeleteFilm={onDeleteFilm}
-            watched={watched}
-            onWatchedFilm={onWatchedFilm}
-          />
-        </li>
-      ))}
-    </ul>
+    <FilmListBlock>
+      {films.map(({ id, image, title, watched }) => {
+        return (
+          <li key={id}>
+            <FilmListItem
+              openModal={openModal}
+              image={image}
+              title={title}
+              id={id}
+              // deleteFilm={deleteFilm}
+              watched={watched}
+              toggleWatchedFilms={toggleWatchedFilms}
+            />
+          </li>
+        );
+      })}
+    </FilmListBlock>
   );
-};
-
-FilmList.propTypes = {
-  films: propTypes.arrayOf(
-    propTypes.shape({
-      id: propTypes.number.isRequired,
-      title: propTypes.string.isRequired,
-      img: propTypes.string.isRequired,
-      watched: propTypes.bool.isRequired,
-    }).isRequired
-  ).isRequired,
-  onDeleteFilm: propTypes.func.isRequired,
-  onWatchedFilm: propTypes.func.isRequired,
 };

@@ -1,10 +1,12 @@
-const mapper = films => {
-  return films.map(({ id, title, backdrop_path: img }) => ({
-    img,
-    id,
-    title,
-    watched: false,
-  }));
+const mapper = (data) => {
+  return data.map(({ id, backdrop_path, title }) => {
+    return {
+      id: id,
+      image: backdrop_path,
+      title: title,
+      watched: false,
+    };
+  });
 };
 
 export default mapper;
