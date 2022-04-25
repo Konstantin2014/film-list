@@ -1,38 +1,38 @@
-import { useState, useEffect } from "react";
-import mapper from "../utils/mapper";
-import { FilmList } from "./FilmList/FilmList";
-import * as API from "../services/api";
-import { Button } from "./Button/Button";
-import { Modal } from "./Modal/Modal";
+import { useState, useEffect } from 'react';
+import mapper from '../Utils/Mapper';
+import { FilmList } from '../components/Filmlist/FilmList';
+import * as API from '../services/api';
+import { Button } from './Button/Button';
+import { Modal } from './Modal/Modal';
 
-import React from "react";
+import React from 'react';
 
 export const App = () => {
   const [films, setFilms] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState('');
 
   useEffect(() => {
     setIsLoading(true);
     API.getFilms(page)
-      .then((films) => {
+      .then(films => {
         const mapperFilms = mapper(films);
-        setFilms((prevFilms) => [...prevFilms, ...mapperFilms]);
+        setFilms(prevFilms => [...prevFilms, ...mapperFilms]);
       })
-      .catch((error) => {
+      .catch(error => {
         console.log(error);
       })
       .finally(setIsLoading(false));
   }, [page]);
 
   const loadMore = () => {
-    setPage((prevPage) => prevPage + 1);
+    setPage(prevPage => prevPage + 1);
   };
 
-  const toggleWatchedFilms = (id) => {
-    setFilms((prevFilms) =>
-      prevFilms.map((film) => {
+  const toggleWatchedFilms = id => {
+    setFilms(prevFilms =>
+      prevFilms.map(film => {
         if (film.id === id) {
           return {
             ...film,
@@ -44,12 +44,12 @@ export const App = () => {
     );
   };
 
-  const openModal = (image) => {
+  const openModal = image => {
     setImage(image);
   };
 
   const closeModal = () => {
-    setImage("");
+    setImage('');
   };
 
   return (
