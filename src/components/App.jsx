@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import mapper from '../Utils/Mapper';
-import { FilmList } from '../components/Filmlist/FilmList';
+import { FilmList } from './Filmlist/Filmlist';
 import * as API from '../services/api';
 import { Button } from './Button/Button';
 import { Modal } from './Modal/Modal';
