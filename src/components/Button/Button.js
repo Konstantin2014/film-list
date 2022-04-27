@@ -3,7 +3,7 @@ export const Button = ({ loadMore }) => {
     <button
       type="button"
       onClick={loadMore}
-      style={{ display: 'block', margin: '0 auto', marginTop: '20px' }}
+      style={{ display: "block", margin: "0 auto", marginTop: "20px" }}
     >
       Load more
     </button>
